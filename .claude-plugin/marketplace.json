@@ -1,0 +1,37 @@
+{
+  "name": "skills",
+  "owner": {
+    "name": "m2"
+  },
+  "metadata": {
+    "description": "Skills plugins for Claude Code",
+    "version": "0.0.1",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "product-owner",
+      "source": "./plugins/product-owner",
+      "description": "Product Owner plugin: defines what to build, creates actionable work items for other roles through PRD writing, user story mapping, sprint planning, and stakeholder reporting",
+      "version": "0.1.0"
+    },
+    {
+      "name": "product-designer",
+      "source": "./plugins/product-designer",
+      "description": "Product Designer plugin: designs user experiences through research, wireframing, UX audits, and design system documentation",
+      "version": "0.1.0"
+    },
+    {
+      "name": "brand-designer",
+      "source": "./plugins/brand-designer",
+      "description": "Brand Designer plugin: creates and maintains brand identity through guidelines, visual identity systems, and content strategy",
+      "version": "0.1.0"
+    },
+    {
+      "name": "office-manager",
+      "source": "./plugins/office-manager",
+      "description": "Office Manager plugin: manages shared document structure, artifact storage, and document maintenance across all employee plugins",
+      "version": "0.1.0"
+    }
+  ]
+}
