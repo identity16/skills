@@ -23,12 +23,22 @@ This is respect as much as hygiene. Everyone works differently, and even these s
 
 ## Skills
 
+### Routines
+
+The habits that bookend every session: `/lets-work` on the way in, `/checkpoint` on the way out. All state lives under `${XDG_DATA_HOME:-$HOME/.local/share}/identity16-skills/`, never in the target project.
+
 | Skill | What it does |
 |---|---|
 | `lets-work` | Session entrypoint. Briefs you on how the project drifted relative to *your* recorded mental model since your last visit (or orients a first visit), then sets the session's working frame: surface decisions before they land, put understanding where it lives longest, propose `/checkpoint` on the way out. |
 | `checkpoint` | Exit ritual. Routes what the session taught you to its proper home — code comment, PR/commit message, or your personal journal — and records the visit marker the next `lets-work` briefs from. |
 
-The two form a loop: `/lets-work` on the way in, `/checkpoint` on the way out. All state lives under `${XDG_DATA_HOME:-$HOME/.local/share}/identity16-skills/`, never in the target project.
+### Tools
+
+Reached for when the task calls for them. Each one makes the repo's own record — commits, PRs, docs — carry more of the context, so less ends up needing a personal store at all.
+
+| Skill | What it does |
+|---|---|
+| `organize-commits` | Restructures a branch into reviewer-friendly, bisectable commits — every commit builds and passes tests on its own, and every message carries the "why" its diff cannot. |
 
 ## Install
 
