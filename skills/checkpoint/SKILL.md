@@ -17,6 +17,8 @@ Same contract as `lets-work` — keep the two in sync:
 
 Never write any of this — or any reference to this skill pack — into the target project's files, commits, PRs, or issues.
 
+**The ritual's weight must be proportional to what the session taught.** A routine session that produced nothing worth keeping gets no interview: update `state.json`, confirm in one line, done. The full routing below is for sessions that actually moved the user's understanding.
+
 ## Steps
 
 1. Collect candidates: walk back through the session and list what was learned — decisions made, gotchas hit, invariants discovered, assumptions refuted, questions still open, WIP state.
