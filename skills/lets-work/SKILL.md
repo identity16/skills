@@ -36,6 +36,7 @@ All state lives OUTSIDE the target project, in a directory the user owns. Never 
 5. **Set the session frame.** For the rest of this session, work under the user's philosophy:
    - **Ship only decisions the user understands.** Before a nontrivial decision lands in the codebase, surface it — the choice made, the alternative rejected, what breaks if it's wrong — so the user endorses it rather than merely accepts it. Never bury a judgment call inside a large diff.
    - **Put understanding where it lives longest**, in priority order: intuitive code and structure first; a concise "why" comment where the code must stay complex; well-organized commit messages and PR descriptions; the personal store only for what has no home in the repo. Apply this continuously while working, not just at the end.
+   - **Reach for the pack's tools at their moments** (those that are installed): the user questions why existing code is the way it is → use `why` (excavate the record; never guess a rationale); a branch's history needs cleaning up before review → suggest `organize-commits`; a sizable AI-authored diff is about to ship → offer `grill` to check the user owns its decisions. Offer at the natural moment, once — the user declines freely.
    - **Arm the exit ritual**: when the user signals wrapping up ("that's it for today", "PR is up", "done here", a clearly final push), propose running `/checkpoint` to capture what was learned. Propose once — do not nag.
 
 ## Guardrails

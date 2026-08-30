@@ -29,7 +29,7 @@ The habits that bookend every session: `/lets-work` on the way in, `/checkpoint`
 
 | Skill | What it does |
 |---|---|
-| `lets-work` | Session entrypoint. Briefs you on how the project drifted relative to *your* recorded mental model since your last visit (or orients a first visit), then sets the session's working frame: surface decisions before they land, put understanding where it lives longest, propose `/checkpoint` on the way out. |
+| `lets-work` | Session entrypoint. Briefs you on how the project drifted relative to *your* recorded mental model since your last visit (or orients a first visit), then sets the session's working frame: surface decisions before they land, put understanding where it lives longest, reach for the pack's tools at their moments, propose `/checkpoint` on the way out. |
 | `checkpoint` | Exit ritual. Routes what the session taught you to its proper home — code comment, PR/commit message, or your personal journal — and records the visit marker the next `lets-work` briefs from. |
 
 ### Tools
@@ -40,6 +40,7 @@ Reached for when the task calls for them. Each one makes the repo's own record �
 |---|---|
 | `organize-commits` | Restructures a branch into reviewer-friendly, bisectable commits — every commit builds and passes tests on its own, and every message carries the "why" its diff cannot. |
 | `why` | Excavates why a piece of code is the way it is — blame → commits → PRs → issues — and answers with evidence, never a guess. A cold trail becomes a proposal to restore the lost context as a comment. |
+| `grill` | Interviews you on the decisions inside a diff before it ships — consequence questions, not recall. Gaps get routed: fix the code to show its reasoning, put the rationale in the PR, or learn it before shipping. |
 
 ## Install
 
