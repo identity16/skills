@@ -13,6 +13,9 @@ Switching between projects is expensive in two ways: every project runs a differ
 **Ship only decisions you understand.**
 The AI era makes projects cheap to start and independent contexts easy to switch between — working across many projects is the new normal. It also fills every one of those projects with AI-assisted contributions, so understanding decays even in codebases you work on yourself. But a decision deserves to land in a codebase only when it was made with sufficient understanding. So these skills exist to raise your understanding of every project you contribute to — up to the level the work at hand demands.
 
+**Understanding lives in the work, or as close to it as possible.**
+The best codebase needs no external context: intuitive code and structure — or, where the code must stay complex, a concise comment that explains it well. Second best is context that is easy to find: well-organized PRs, docs, and commit logs. A personal store outside the repo is the last resort, for context that fits neither. So when these skills capture understanding, they push it *up* this ladder whenever possible — promote a hard-won lesson into a code comment, a decision into a PR description — and keep privately only what has no home in the repo. A personal store that shrinks over time means the codebase is getting better.
+
 **Zero traces in target projects.**
 Everything these skills know lives in a private directory you own — never in the projects you contribute to. No config files, no `.gitignore` entries, no commits, nothing. Your setup travels with *you*, not with the repo.
 

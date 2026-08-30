@@ -4,6 +4,8 @@ A **personal** agent skill pack for moving between projects without losing under
 
 The premise: in the AI era, projects are cheap to start and every codebase drifts under AI-assisted change — yet only decisions made with sufficient understanding deserve to land in a codebase. Every skill here must serve that end: raising the user's understanding of the project at hand to the level the work demands. A skill that merely produces output faster, without building understanding, does not belong in this pack.
 
+Understanding has a home, in priority order: (1) the code itself — intuitive structure, or a concise explanatory comment where the code must stay complex; (2) well-organized repo artifacts — PRs, docs, commit logs; (3) the user's personal store, only for context that fits neither. Skills that capture understanding must promote it up this ladder before falling back to the personal store. Note the zero-traces invariant below forbids *skill* artifacts, not the work itself — comments, commits, and PRs are the preferred trace.
+
 ## Invariants
 
 1. **Zero traces in target projects.** No skill may leave any sign of this pack — its settings or its existence — in a target project's files (including `.gitignore`), commits, PRs, or issues. All state goes to a personal directory the user owns. The why: working styles differ and these skills won't fit everyone, so non-users must never hit a "what is this?" artifact — the only trace worth leaving is the work itself.
