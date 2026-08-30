@@ -16,6 +16,7 @@ Understanding has a home, in priority order: (1) the code itself — intuitive s
 - `skills/<name>/SKILL.md`; directory name = frontmatter `name`.
 - All skills and docs in this repo are written in English. Exception: `README.ko.md` is the Korean translation of the README — keep the two in sync when the README changes.
 - Skills that must only be invoked explicitly by the user get `disable-model-invocation: true`.
+- The personal-state contract (state root, repo-id scheme, file layout) is duplicated in `lets-work` and `checkpoint` SKILL.md because installed skills cannot reliably reference each other's files — when changing it, update both.
 
 ## Verify
 
