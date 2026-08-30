@@ -41,6 +41,7 @@ Reached for when the task calls for them. Each one makes the repo's own record �
 | `organize-commits` | Restructures a branch into reviewer-friendly, bisectable commits — every commit builds and passes tests on its own, and every message carries the "why" its diff cannot. |
 | `why` | Excavates why a piece of code is the way it is — blame → commits → PRs → issues — and answers with evidence, never a guess. A cold trail becomes a proposal to restore the lost context as a comment. |
 | `grill` | Interviews you on the decisions inside a diff before it ships — consequence questions, not recall. Gaps get routed: fix the code to show its reasoning, put the rationale in the PR, or learn it before shipping. |
+| `depth-check` | Before a nontrivial task, computes how much understanding the work demands — working model, contract, or mere awareness per area — subtracts what you already know, and emits the short list of questions to answer before coding. |
 
 ## Install
 

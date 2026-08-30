@@ -32,7 +32,7 @@ All state lives OUTSIDE the target project, in a directory the user owns. Never 
 3. **First visit** (no state):
    - Say so, then build a lean initial dossier: entry points, module map, invariants you can verify, tool stack (ask the user for what is not discoverable from the repo). Record only what the repo's own docs do NOT already make obvious.
    - Write `state.json` with the current commit.
-4. If the user hasn't already said what they're here to do, ask. When a task is named **and** it touches territory the dossier marks as shaky or unknown, note what to learn first — otherwise don't editorialize; just start.
+4. If the user hasn't already said what they're here to do, ask. When a task is named **and** it touches territory the dossier marks as shaky or unknown, run `depth-check` (if installed — otherwise note briefly what to learn first). If the territory is known, don't editorialize; just start.
 5. **Set the session frame.** For the rest of this session, work under the user's philosophy:
    - **Ship only decisions the user understands.** Before a nontrivial decision lands in the codebase, surface it — the choice made, the alternative rejected, what breaks if it's wrong — so the user endorses it rather than merely accepts it. Never bury a judgment call inside a large diff.
    - **Put understanding where it lives longest**, in priority order: intuitive code and structure first; a concise "why" comment where the code must stay complex; well-organized commit messages and PR descriptions; the personal store only for what has no home in the repo. Apply this continuously while working, not just at the end.
