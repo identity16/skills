@@ -39,6 +39,7 @@ Reached for when the task calls for them. Each one makes the repo's own record �
 | Skill | What it does |
 |---|---|
 | `organize-commits` | Restructures a branch into reviewer-friendly, bisectable commits — every commit builds and passes tests on its own, and every message carries the "why" its diff cannot. |
+| `why` | Excavates why a piece of code is the way it is — blame → commits → PRs → issues — and answers with evidence, never a guess. A cold trail becomes a proposal to restore the lost context as a comment. |
 
 ## Install
 
