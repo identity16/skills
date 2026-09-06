@@ -37,7 +37,7 @@ The habits that bookend every session: `/lets-work` on the way in, `/checkpoint`
 
 ### Tools
 
-Reached for when the task calls for them. Each one makes the repo's own record — commits, PRs, docs — carry more of the context, so less ends up needing a personal store at all.
+Reached for when the task calls for them. Each one makes the project's own record — commits, PRs, tickets, docs — carry more of the context, so less ends up needing a personal store at all.
 
 | Skill | What it does |
 |---|---|
@@ -45,6 +45,7 @@ Reached for when the task calls for them. Each one makes the repo's own record �
 | `why` | Excavates why a piece of code is the way it is — blame → commits → PRs → issues — and answers with evidence, never a guess. A cold trail becomes a proposal to restore the lost context as a comment. |
 | `grill` | Interviews you on the decisions inside a diff before it ships — consequence questions, not recall. Gaps get routed: fix the code to show its reasoning, put the rationale in the PR, or learn it before shipping. |
 | `depth-check` | Before a nontrivial task, computes how much understanding the work demands — working model, contract, or mere awareness per area — subtracts what you already know, and emits the short list of questions to answer before coding. |
+| `make-ticket` | Drafts a ticket body that records intent, not a solution — problem, wanted outcome, affected users and systems, constraints, open questions. Grounds it in the repo, leaves unknowns as questions rather than guesses, and files it to Linear when a tracker is connected. (Format inspired by Anthropic's AI-native SDLC playbook.) |
 
 ## Install
 
