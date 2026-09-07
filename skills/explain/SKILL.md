@@ -51,7 +51,7 @@ Telling the user where *not* to look is most of what an explanation is worth. Th
 
 ### 4. Explain in whatever medium actually helps
 
-There is no fixed format and no required section list. Pick the cheapest thing that produces understanding, say what you picked, and switch if it isn't landing:
+There is no fixed format and no required section list. Pick whatever lands with the least effort from the reader, say what you picked, and switch if it isn't landing:
 
 - **A structured walkthrough in the terminal** — the default. Labeled blocks, a table where things compare, a numbered reading order. Not paragraphs: a wall of prose is the most common way an explanation fails, because the user can't find the one line that matters in it.
 - **A diagram** — when the change moves structure: call path, data flow, or state before → after. Prose describing a topology is a poor substitute.
@@ -84,6 +84,6 @@ The measure of this skill: the same change should never need explaining twice.
 
 - **Explaining is not approving.** Never end with a verdict ("looks fine", "safe to merge"). The user makes that call; hand them the model, including the parts you'd push back on.
 - **The user asked to understand, not to be tested.** Don't turn the close into a quiz. Inviting them to push on anything unclear, and going deeper where they do, is the comprehension check.
-- **Scannable beats thorough.** One idea per line, the point first, headings and tables over prose, no sentence that only introduces the next one. If a passage can't be skimmed and re-entered halfway, it doesn't get read — and an unread explanation taught nothing.
+- **Write for low attention, not for careful reading.** Assume a tired reader mid-context-switch who is skimming — an explanation that only works when someone concentrates has handed its job back to them. So: the conclusion in plain words first; one idea per line; small units that land in a single glance; a term defined before anything leans on it; a diagram or table wherever it replaces a paragraph. Never make the reader hold three things in their head to get the fourth, or scroll back to a "as noted above".
 - Every claim traces to evidence actually read. No praise for the author, no filler sections, no snippets over ~15 lines — link or diagram instead.
 - Zero traces: anything promoted into the repo is normal work product — never mention this skill pack or the personal store in it.
