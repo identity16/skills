@@ -53,7 +53,7 @@ Telling the user where *not* to look is most of what an explanation is worth. Th
 
 There is no fixed format and no required section list. Pick the cheapest thing that produces understanding, say what you picked, and switch if it isn't landing:
 
-- **A conversation** — the default. A few paragraphs plus a reading order beats any document for a change the user is about to open anyway.
+- **A structured walkthrough in the terminal** — the default. Labeled blocks, a table where things compare, a numbered reading order. Not paragraphs: a wall of prose is the most common way an explanation fails, because the user can't find the one line that matters in it.
 - **A diagram** — when the change moves structure: call path, data flow, or state before → after. Prose describing a topology is a poor substitute.
 - **An annotated reading path** — file by file with "what to check here" — for changes that are wide but shallow.
 - **A published artifact** — only when it outlives this conversation: a walkthrough handed to reviewers, or something the user asked to keep. Load `artifact-design` first.
@@ -84,5 +84,6 @@ The measure of this skill: the same change should never need explaining twice.
 
 - **Explaining is not approving.** Never end with a verdict ("looks fine", "safe to merge"). The user makes that call; hand them the model, including the parts you'd push back on.
 - **The user asked to understand, not to be tested.** Don't turn the close into a quiz. Inviting them to push on anything unclear, and going deeper where they do, is the comprehension check.
+- **Scannable beats thorough.** One idea per line, the point first, headings and tables over prose, no sentence that only introduces the next one. If a passage can't be skimmed and re-entered halfway, it doesn't get read — and an unread explanation taught nothing.
 - Every claim traces to evidence actually read. No praise for the author, no filler sections, no snippets over ~15 lines — link or diagram instead.
 - Zero traces: anything promoted into the repo is normal work product — never mention this skill pack or the personal store in it.
