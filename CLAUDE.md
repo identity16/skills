@@ -31,4 +31,4 @@ The premise: a recurring judgment should be delegated no faster than the reasons
 
 ## Verify
 
-After changes, confirm skills are discoverable with `npx skills add . --list`, and update the bucket `README.md` and the Skills section in the README.
+After changes, run `node tools/check-skills.mjs` (CI runs it too) and fix what it reports. It checks names, READMEs, and duplicated state contracts; prose sync between `README.md` and `README.ko.md` stays on you.

@@ -70,7 +70,7 @@ npx skills add identity16/skills --list
 npx skills add identity16/skills
 
 # Claude Code와 Codex 양쪽에 전역으로, 프롬프트 없이 설치
-npx skills add identity16/skills -g -a claude-code,codex -y
+npx skills add identity16/skills -g -a claude-code codex -y
 ```
 
 ## 스킬 추가하기

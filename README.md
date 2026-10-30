@@ -70,7 +70,7 @@ npx skills add identity16/skills --list
 npx skills add identity16/skills
 
 # Install for both Claude Code and Codex, globally, without prompts
-npx skills add identity16/skills -g -a claude-code,codex -y
+npx skills add identity16/skills -g -a claude-code codex -y
 ```
 
 ## Adding a skill
