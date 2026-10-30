@@ -12,6 +12,10 @@ The premise: in the AI era, projects are cheap to start and every codebase drift
 
 Understanding has a home, in priority order: (1) the code itself — intuitive structure, or a concise explanatory comment where the code must stay complex; (2) well-organized repo artifacts — PRs, docs, commit logs; (3) the user's personal store, only for context that fits neither. Skills that capture understanding must promote it up this ladder before falling back to the personal store. Note the zero-traces invariant below forbids *skill* artifacts, not the work itself — comments, commits, and PRs are the preferred trace.
 
+### `loops/` — delegating recurring judgments through feedback loops
+
+The premise: a recurring judgment should be delegated no faster than the reasons behind it become explicit. A loop proposes, the user approves or corrects with a reason, and corrections become rules; a rule skips review only after a track record and the user's approval. Success is fewer items needing review without more corrections — and the rulebook, the user's judgment written down, is worth having in its own right. A skill that automates without capturing the reasons does not belong in this bucket.
+
 ## Invariants
 
 1. **Zero traces in target projects.** No skill may leave any sign of this pack — its settings or its existence — in a target project's files (including `.gitignore`), commits, PRs, or issues. All state goes to a personal directory the user owns. The why: working styles differ and these skills won't fit everyone, so non-users must never hit a "what is this?" artifact — the only trace worth leaving is the work itself.
@@ -23,7 +27,7 @@ Understanding has a home, in priority order: (1) the code itself — intuitive s
 - Each bucket has a `README.md` listing its skills, one line each, linked to their `SKILL.md`.
 - All skills and docs in this repo are written in English. Exception: `README.ko.md` is the Korean translation of the README — keep the two in sync when the README changes.
 - Skills that must only be invoked explicitly by the user get `disable-model-invocation: true`.
-- The personal-state contract (state root, repo-id scheme, file layout) is duplicated in `lets-work` and `checkpoint` SKILL.md because installed skills cannot reliably reference each other's files — when changing it, update both.
+- Personal-state contracts are duplicated because installed skills cannot reliably reference each other's files — when changing one, update every copy: `projects/` (state root, repo-id scheme, file layout) in `lets-work` and `checkpoint`; `loops/` (file layout and schemas) in `make-loop` and `maintain-loop`.
 
 ## Verify
 

@@ -2,7 +2,7 @@
 
 English | [한국어](./README.ko.md)
 
-Personal agent skills for contributing to many projects without losing your grip on any of them. Installable with the [Skills CLI](https://github.com/vercel-labs/skills); works in both Claude Code and Codex.
+Personal agent skills, grouped by theme: keeping your grip on many projects at once, and turning recurring judgments into feedback loops. Installable with the [Skills CLI](https://github.com/vercel-labs/skills); works in both Claude Code and Codex.
 
 ## Why
 
@@ -50,6 +50,15 @@ Reached for when the task calls for them. Each one makes the project's own recor
 | `explain` | Explains a change until you could defend it — the problem behind it, the decisions and what they beat, and what breaks if their assumptions shift — grounded in the repo's record rather than a guessed rationale. Whatever the code failed to say for itself becomes a fix to the code. |
 | `depth-check` | Before a nontrivial task, computes how much understanding the work demands — working model, contract, or mere awareness per area — subtracts what you already know, and emits the short list of questions to answer before coding. |
 | `make-ticket` | Drafts a ticket body that records intent, not a solution — problem, wanted outcome, affected users and systems, constraints, open questions. Grounds it in the repo, leaves unknowns as questions rather than guesses, and files it to Linear when a tracker is connected. (Format inspired by Anthropic's AI-native SDLC playbook.) |
+
+### `loops/` — delegate a recurring judgment by writing down why
+
+For judgments you make again and again by hand (sorting a ledger, reviewing PRs). The agent proposes, you approve or correct with a reason, and each correction becomes a rule; a rule skips your review only after a track record and your approval. The loop is working when fewer items need you while corrections stay rare. State lives under `${XDG_DATA_HOME:-$HOME/.local/share}/identity16-skills/loops/`. See [`skills/loops/`](./skills/loops/README.md).
+
+| Skill | What it does |
+|---|---|
+| `make-loop` | Defines a loop: what an item is, where items come from, what the agent looks up itself, what a proposal looks like, how you review, where approved outcomes go, and how to verify they landed. Rules start nearly empty and grow from your corrections. |
+| `maintain-loop` | Runs a cycle: collect → propose with cited rules and a confidence → review only what needs you → turn corrections into rules and flag repeated ones → apply and verify → report the review-needed trend. Proposes rule promotions; you approve them. |
 
 ## Install
 
