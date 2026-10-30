@@ -29,7 +29,7 @@ This skill reads `loop.md` and owns everything else. Never write any of this, or
 
 1. **Load.** Find the loop under the root by topic. None → say so and offer `make-loop` (if installed) instead of improvising one. Read `loop.md`, `rules.json`, `reference.json`, and the latest cycle with its corrections and caveats. If the latest cycle is not `closed`, resume it from its status instead of starting a new one.
 2. **Collect.** Start from the cursor rule. Collect every item in range that still awaits a decision; dropping one of those is itself a proposal (`exclude`) and goes through review. Items whose outcome is already settled (merged, closed, entered by hand) are not reviewed again: if the user already left a reason for the outcome, record it as that item's review; otherwise leave the item out. Record caveats (an unreachable source, a gap in the data). Read the Gate's result if one is defined.
-3. **Enrich.** Do every lookup in `loop.md`'s Enrich section before proposing. Never hand the user a placeholder for something the agent could have looked up.
+3. **Enrich.** Do every lookup in `loop.md`'s Enrich section, then gather whatever evidence an applicable rule asks for (a rule may name a check to run, e.g. a smoke test), before proposing. Never hand the user a placeholder for something the agent could have looked up or run.
 4. **Propose.** For each item: the proposal in the defined shape, `cites` (ids of the rules it applied), a one- or two-sentence `why`, and `conf`:
    - `certain` — every cited rule is a `lookup` or `confirmed`/`automated`, and nothing was guessed.
    - `inferred` — a judgment call; say what it rests on.
