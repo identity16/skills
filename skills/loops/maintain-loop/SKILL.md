@@ -28,7 +28,7 @@ This skill reads `loop.md` and owns everything else. Never write any of this, or
 ## Steps
 
 1. **Load.** Find the loop under the root by topic. None → say so and offer `make-loop` (if installed) instead of improvising one. Read `loop.md`, `rules.json`, `reference.json`, and the latest cycle with its corrections and caveats. If the latest cycle is not `closed`, resume it from its status instead of starting a new one.
-2. **Collect.** Start from the cursor rule. Collect every item in range; dropping an item is itself a proposal (`exclude`) and goes through review. Record caveats (an unreachable source, a gap in the data). Read the Gate's result if one is defined.
+2. **Collect.** Start from the cursor rule. Collect every item in range that still awaits a decision; dropping one of those is itself a proposal (`exclude`) and goes through review. Items whose outcome is already settled (merged, closed, entered by hand) are not reviewed again: if the user already left a reason for the outcome, record it as that item's review; otherwise leave the item out. Record caveats (an unreachable source, a gap in the data). Read the Gate's result if one is defined.
 3. **Enrich.** Do every lookup in `loop.md`'s Enrich section before proposing. Never hand the user a placeholder for something the agent could have looked up.
 4. **Propose.** For each item: the proposal in the defined shape, `cites` (ids of the rules it applied), a one- or two-sentence `why`, and `conf`:
    - `certain` — every cited rule is a `lookup` or `confirmed`/`automated`, and nothing was guessed.
@@ -36,7 +36,12 @@ This skill reads `loop.md` and owns everything else. Never write any of this, or
    - `ask` — depends on facts only the user has; say exactly what is unknown.
    Values must come from `reference.json` where a list exists.
 5. **Route.** An item skips review (`review.status: skipped`) only if it is `certain` and every cited rule is `automated`. Still pull one in ten skipped items into review as an audit, chosen at random.
-6. **Review.** Ask once, late, with everything prepared: a brief per item (proposal, why, what is unknown), not raw data. Group by `conf`; `ask` items first. Let the user approve in bulk and correct individually — each correction needs the right value and a reason. Use the Review surface from `loop.md`. Record every answer in the cycle file as it comes.
+6. **Review.** Ask once, late, with everything prepared. The user may not remember the item, so each brief must stand on its own, in plain words, with no loop vocabulary (no ids, `conf`, rule ids):
+   - **What it is** — the item in one line, as the user would name it.
+   - **What was checked** — what the agent verified itself, and what it could not.
+   - **Recommendation** — the proposal, with its reason.
+   - **The question** — one sentence the user can answer in one line.
+   Group by `conf`; `ask` items first. Let the user approve in bulk and correct individually — each correction needs the right value and a reason. Use the Review surface from `loop.md`. Record every answer in the cycle file as it comes.
 7. **Learn.** Before applying:
    - Update each cited rule's `record`: approved → `approved`+1, `streak`+1; corrected → `corrected`+1, `streak` = 0.
    - Generalize each correction: fix the rule that misled the proposal, or add a `tentative` rule with the item as `basis`. A mapping (name → value) is a `lookup`.
