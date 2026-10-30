@@ -62,4 +62,4 @@ npx skills add identity16/skills -g -a claude-code,codex -y
 
 ## Adding a skill
 
-Create `skills/<name>/SKILL.md`; new skills must uphold the philosophy above. Authoring rules live in `CLAUDE.md`. Verify discoverability before committing with `npx skills add . --list`, and update the Skills section here.
+Create `skills/<bucket>/<name>/SKILL.md`; new skills must uphold the philosophy above. Authoring rules live in `CLAUDE.md`. Verify discoverability before committing with `npx skills add . --list`, and update the Skills section here.

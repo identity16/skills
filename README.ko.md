@@ -62,4 +62,4 @@ npx skills add identity16/skills -g -a claude-code,codex -y
 
 ## 스킬 추가하기
 
-`skills/<name>/SKILL.md`를 만듭니다. 새 스킬은 위의 철학을 지켜야 합니다. 작성 규칙은 `CLAUDE.md`에 있습니다. 커밋 전에 `npx skills add . --list`로 발견되는지 확인하고, 이 문서의 스킬 섹션을 갱신하세요.
+`skills/<bucket>/<name>/SKILL.md`를 만듭니다. 새 스킬은 위의 철학을 지켜야 합니다. 작성 규칙은 `CLAUDE.md`에 있습니다. 커밋 전에 `npx skills add . --list`로 발견되는지 확인하고, 이 문서의 스킬 섹션을 갱신하세요.
