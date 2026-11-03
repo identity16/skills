@@ -17,6 +17,7 @@ jobs:
         with:
           node-version: 24
       - run: node tools/check-skills.mjs
+      - run: node --test 'skills/**/*.test.mjs'
       - name: Skills CLI discovers every skill
         run: |
           expected=$(find skills -mindepth 3 -name SKILL.md | wc -l)

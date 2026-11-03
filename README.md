@@ -2,7 +2,7 @@
 
 English | [한국어](./README.ko.md)
 
-Personal agent skills, grouped by theme: keeping your grip on many projects at once, and turning recurring judgments into feedback loops. Installable with the [Skills CLI](https://github.com/vercel-labs/skills); works in both Claude Code and Codex.
+Personal agent skills, grouped by theme: keeping your grip on many projects at once, turning recurring judgments into feedback loops, and backing "it works" with runs anyone can repeat. Installable with the [Skills CLI](https://github.com/vercel-labs/skills); works in both Claude Code and Codex.
 
 ## Why
 
@@ -59,6 +59,14 @@ For judgments you make again and again by hand (sorting a ledger, reviewing PRs)
 |---|---|
 | `make-loop` | Defines a loop: what an item is, where items come from, what the agent looks up itself, what a proposal looks like, how you review, where approved outcomes go, and how to verify they landed. Rules start nearly empty and grow from your corrections. |
 | `maintain-loop` | Runs a cycle: collect → propose with cited rules and a confidence → review only what needs you → turn corrections into rules and flag repeated ones → apply and verify → report the review-needed trend. Proposes rule promotions; you approve them. |
+
+### `verification/` — back "it works" with a run anyone can repeat
+
+For checks you would otherwise do by hand on a phone or a browser. Devices, test data, and cleanup are all handled by code, so a run can be repeated unattended and never leaves state behind for you to clean. State lives under `${XDG_DATA_HOME:-$HOME/.local/share}/identity16-skills/smoke/`. See [`skills/verification/`](./skills/verification/README.md).
+
+| Skill | What it does |
+|---|---|
+| `smoke` | Sets up and runs smoke tests on one deep module, the Smoke Run: you write a device, the cases (test data) a scenario needs, and its steps; the run provisions, sets up, executes, and releases in reverse order — even on failure, Ctrl-C, or a crash, whose leftovers the next run cleans up. |
 
 ## Install
 
