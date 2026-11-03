@@ -11,7 +11,7 @@ Runs the cycle of a loop defined by `make-loop`: propose → review → learn �
 
 Same contract as `make-loop` — keep the two in sync:
 
-- Root: `${XDG_DATA_HOME:-$HOME/.local/share}/identity16-skills/loops/<topic>/` (`<topic>`: short kebab-case slug, e.g. `ledger`, `mufi-code-review`).
+- Root: `${XDG_DATA_HOME:-$HOME/.local/share}/identity16-skills/loops/<topic>/` (`<topic>`: short kebab-case slug, e.g. `ledger`, `code-review`).
 - `loop.md` — the definition, owned by `make-loop` (sections listed there).
 - `rules.json` — `{version, rules:[{id, group, kind, text, basis, state, since, origin, record:{cited, approved, corrected, streak}}]}`
   - `kind`: `lookup` (deterministic: a mapping or table) | `guideline` (needs judgment).
