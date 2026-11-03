@@ -16,6 +16,10 @@ Understanding has a home, in priority order: (1) the code itself — intuitive s
 
 The premise: a recurring judgment should be delegated no faster than the reasons behind it become explicit. A loop proposes, the user approves or corrects with a reason, and corrections become rules; a rule skips review only after a track record and the user's approval. Success is fewer items needing review without more corrections — and the rulebook, the user's judgment written down, is worth having in its own right. A skill that automates without capturing the reasons does not belong in this bucket.
 
+### `verification/` — backing "it works" with runs anyone can repeat
+
+The premise: "it works" is a claim until a run backs it, and a run is only worth trusting if it can be repeated unattended — devices, data, and cleanup handled by code, not by hand. Every skill here must make such runs cheaper to set up and safer to repeat. A skill that checks by eyeballing, or leaves state behind for a human to clean, does not belong in this bucket.
+
 ## Invariants
 
 1. **Zero traces in target projects.** No skill may leave any sign of this pack — its settings or its existence — in a target project's files (including `.gitignore`), commits, PRs, or issues. All state goes to a personal directory the user owns. The why: working styles differ and these skills won't fit everyone, so non-users must never hit a "what is this?" artifact — the only trace worth leaving is the work itself.
