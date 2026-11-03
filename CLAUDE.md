@@ -20,6 +20,7 @@ The premise: a recurring judgment should be delegated no faster than the reasons
 
 1. **Zero traces in target projects.** No skill may leave any sign of this pack — its settings or its existence — in a target project's files (including `.gitignore`), commits, PRs, or issues. All state goes to a personal directory the user owns. The why: working styles differ and these skills won't fit everyone, so non-users must never hit a "what is this?" artifact — the only trace worth leaving is the work itself.
 2. **Agent-neutral.** Everything must work in both Claude Code and Codex. Do not depend on agent-specific mechanisms (hooks, settings.json, etc.) — use only the global instruction files (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`) and SKILL.md.
+3. **Nothing specific to the author's situation.** This repo is public, so everything in it — skills, docs, tests, commit messages, PR descriptions — carries only what the skill itself needs. Leave out the particulars of whatever prompted a change: the author's machines, devices, accounts, employer, projects, internal tools, and the incidents behind a fix. Keep the lesson, drop the case: write "a killed driver can leave its server running", not where and to whom it happened. Examples and slugs use neutral placeholders, never real identifiers (device or team ids, hostnames, internal URLs, company names). The why: specifics leak private context, and a skill shaped around one person's setup stops fitting anyone else.
 
 ## Skill authoring rules
 
@@ -31,4 +32,4 @@ The premise: a recurring judgment should be delegated no faster than the reasons
 
 ## Verify
 
-After changes, run `node tools/check-skills.mjs` (CI runs it too) and fix what it reports. It checks names, READMEs, and duplicated state contracts; prose sync between `README.md` and `README.ko.md` stays on you.
+After changes, run `node tools/check-skills.mjs` (CI runs it too) and fix what it reports. It checks names, READMEs, and duplicated state contracts; prose sync between `README.md` and `README.ko.md`, and keeping specifics out (invariant 3), stay on you.
