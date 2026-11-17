@@ -55,7 +55,16 @@ Before rewriting anything, create a backup branch:
 git branch backup/<current>-$(date +%s)
 ```
 
-If the working tree has untracked/uncommitted changes, stash or commit first — and tell the user.
+A backup branch only covers what is committed. Also save `git diff HEAD` and a copy of untracked files to a scratch location outside the repo — uncommitted work has no other backup.
+
+If the working tree has untracked/uncommitted changes, move them aside with a temporary commit and tell the user. Avoid `git stash`: the stash stack is shared by every worktree and session on the repo, so a bare `stash pop` can restore someone else's changes. If you must stash, push with a unique message, record the entry's SHA, `stash apply <sha>`, then drop that entry by re-finding it.
+
+**The index is shared too.** Other sessions, and editors that run `git status` in the background, act on the same worktree. So:
+
+- Never leave hunks staged while waiting for the user — another commit can sweep them in. Keep candidates in the working tree and review with `git diff`; run `git add` and `git commit` in the same command.
+- Run each reset → re-commit sequence as one invocation so nothing interleaves.
+- An `index.lock` held briefly by a background `git status` makes a git command fail. Retry it rather than placing it mid-way in an `&&` chain — a silently failed step lets later edits land on the wrong commit.
+- Before passing a ref to `checkout` or `reset`, confirm it exists.
 
 ### 4. Choose a restructuring method
 
@@ -67,7 +76,7 @@ Propose the method that fits:
   git add -p                  # pick hunks per group
   git commit -m "..."
   ```
-- **Reordering/squashing multiple commits**: `git rebase -i <base>` — **but `-i` is interactive and cannot run directly in this environment.** Give the user the command to run themselves, or handle it non-interactively with `git rebase --onto` + cherry-pick.
+- **Reordering/squashing multiple commits**: `git rebase -i <base>` — **but `-i` is interactive and cannot run directly in this environment.** Give the user the command to run themselves, or restack non-interactively with `git format-patch <base>` → edit the patches → `git am`. Prefer this over cherry-picking: once an earlier commit is amended, every later cherry-pick conflicts with it.
 - **Changes split cleanly by file**: repeat `git add <file>` + commit.
 - **Changes split within one file**: `git add -p` (`s` to split hunks, `e` for line-level edits).
 
@@ -79,6 +88,8 @@ This is the heart of "bisectable". As each commit is created:
 <build command>    # project-specific; at minimum type check / lint
 <test command>     # at minimum the fast unit tests
 ```
+
+Re-run the formatter / lint autofix on every commit, not once at the end — a rename changes formatting and import order, and a commit that skips it breaks the build for bisect.
 
 On failure, fix that commit (`git commit --amend` or fixup + autosquash). **Never move on with "the next commit fixes it."**
 
@@ -111,7 +122,8 @@ git push --force-with-lease -u origin <branch>
 
 ## Safety rules
 
-- **Never rewrite history without a backup branch.**
+- **Never rewrite history without a backup branch** (plus a saved patch of uncommitted work).
+- If something goes wrong, say so at the top of your reply: what nearly got lost, and evidence that the current state matches the pre-incident state (HEAD SHA, stash count, diff against the saved patch).
 - `rebase -i` is interactive — never invoke it directly in this environment; guide the user or use a non-interactive alternative.
 - No `--no-verify`, no lease-less `git push -f`, unless the user explicitly asks.
 - If the build/test commands are unknown, look in `CLAUDE.md`, `package.json`, `Makefile`, `README`; if still unknown, ask.
