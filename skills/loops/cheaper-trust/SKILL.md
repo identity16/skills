@@ -66,17 +66,11 @@ Sort roughly by `frequency × layer gap`: how often the rule is paid for today, 
 
 ## 4. Report
 
-Top 5–10 only, in this shape:
+Top 5–10 candidates only, as a self-contained HTML file — never in the target project. Resolve the temp dir from `$TMPDIR`, falling back to `/tmp` (`%TEMP%` on Windows), write `<tmpdir>/cheaper-trust-<timestamp>.html`, and open it (`open` on macOS, `xdg-open` on Linux, `start` on Windows). If the user's instructions name a way to share such reports, follow it.
 
-```
-### <the rule, in one line>
-`prose` → `static analysis`  ·  frequency: <n per period / incidents>  ·  definition cost: small, pays back after ~<n> occurrences
-- Evidence: <file:line / PR link / incident record>
-- Device: <what exactly to build, and where it runs — agent-agnostic, or the hook registration for both agents>
-- Remaining prose: <delete / one-line pointer / keep only the judgment part>
-```
+Each candidate is a card with a before/after cross-section of the pyramid showing where the rule is held now and where it would be held, plus strength, the move, where the device runs, evidence, a device, a violating example it catches, payback, and what prose remains. After the cards: the rules that need judgment and stay in prose (deciding not to move something is a result too), then a top recommendation. See [REPORT.md](REPORT.md) for the scaffold, card fields, and style.
 
-Then list, one short line each, the rules that need judgment and should stay in prose. Deciding not to move something is a result too.
+In the chat, give only the file's absolute path, the totals, and the top recommendation in one line. Then ask which candidates to build.
 
 ## Rules
 
