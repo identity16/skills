@@ -5,7 +5,7 @@ description: Find where trust in agent output can be bought at a lower running c
 
 # cheaper-trust
 
-Source: Lauren Tan, *All Code Is Slop (Except Mine)* — the "poteto pyramid".
+Sources: Lauren Tan, *All Code Is Slop (Except Mine)* — the "poteto pyramid" — and her pstack skills (`correct` in particular), which turn the pyramid into a procedure.
 
 ```
 cheap   1. codebase         good API design, architecture, refactoring: wrong code can't be written   ┐ deterministic
@@ -23,23 +23,48 @@ The goal is to keep trust while cutting running cost. The lower a rule lives, th
 
 Takes a target as an argument (a repo path, a file, a PR range). Without one, scan the current working directory plus the user-level setup of **both Claude Code and Codex**: the global instruction files (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, and files they include), installed skills, each agent's hook config, and each agent's memory for the current project. The user may switch agents at any time, so every proposal must hold under both.
 
-## 1. Collect the rules held by lower layers
+## 1. Collect mistake classes
 
-Start from the most expensive layer. Record each rule with its source (`file:line` or a PR link).
+Assume every contributor is an agent that sees only the files it opened, copies the nearest example, and takes the shortest path that compiles. Hunt for the mistakes that assumption produces, starting from the most expensive layer. Record each occurrence with its source (`file:line`, a PR link, a commit).
 
-- **human review** — review comments on recently merged PRs (`gh pr list --state merged -L 30`, `gh api repos/{o}/{r}/pulls/{n}/comments`). A comment made twice or more is a candidate. Feedback entries in agent memory and correction examples in the user's preference files are also things a person caught.
-- **prose** — imperative sentences in `CLAUDE.md`, `AGENTS.md`, `.claude/rules/`, `.cursor/rules/`, skill bodies, and either agent's memory ("never …", "always …", "after X, run Y", "check that …"). Note which agent reads each file: `AGENTS.md` reaches Codex, `CLAUDE.md` reaches Claude Code, and memory reaches only the agent that wrote it.
+- **human review** — review comments on recently merged PRs (`gh pr list --state merged -L 30`, `gh api repos/{o}/{r}/pulls/{n}/comments`), reverts and fix-up commits, feedback entries in either agent's memory, and correction examples in the user's preference files.
+- **prose** — imperative sentences in `CLAUDE.md`, `AGENTS.md`, `.claude/rules/`, `.cursor/rules/`, skill bodies, either agent's memory, and comments that explain a workaround ("never …", "always …", "after X, run Y", "check that …", `IMPORTANT`, `do not remove`). Note which agent reads each file: `AGENTS.md` reaches Codex, `CLAUDE.md` reaches Claude Code, and memory reaches only the agent that wrote it.
 - **verification** — procedures where an agent or a person "runs it and checks", runtime asserts, manual checklists.
-- **static analysis** — how often `eslint-disable`, `@ts-ignore`, `# noqa` appear; custom lint rules that block a forbidden pattern. Check whether API design could make the pattern impossible instead. Include agent hooks — Claude Code's `hooks` in `.claude/settings.json` (project or user) and Codex's hook config (`hooks.json` or `[hooks]` in `config.toml`, under `.codex/` or `~/.codex/`) — and note which agent each one runs under.
+- **static analysis** — suppressions (`eslint-disable`, `@ts-ignore`, `# noqa`) and the rule each one silences; custom lint rules that block a forbidden pattern. Include agent hooks — Claude Code's `hooks` in `.claude/settings.json` (project or user) and Codex's hook config (`hooks.json` or `[hooks]` in `config.toml`, under `.codex/` or `~/.codex/`) — and note which agent each one runs under.
+- **the code itself** — workarounds, deprecated paths, and anti-patterns an agent would copy because they look like the established pattern.
 
-## 2. Run the tests on each rule
+Group occurrences into **mistake classes**: the same wrong move, whatever the wording or file. Then filter:
+
+- A class with two or more occurrences is a candidate.
+- A class with one occurrence stays in, marked `Speculative`. One correction is an anecdote until it repeats, and agents over-generalize small corrections into hard rules.
+- A prose rule that exists **and** was violated again is the strongest signal: nothing enforces it. It ranks first regardless of count.
+- Drop what will not hold in six months or would not change what a future agent does.
+- Suppressions survive only when the silenced rule is faulty, pedantic, or style-only. One that silences a rule catching real bugs is a candidate.
+
+## 2. Place each class
 
 The first layer from the top that answers "yes" is the target layer.
 
-1. **codebase** — Can the wrong state be made unrepresentable through types, the API, or directory structure? (e.g. "always call B after A" → one function that does A and B)
-2. **static analysis** — Can a machine judge a violation from the input alone? Yes if a regex, AST check, schema, test, or hook can express it. (e.g. "never write non-ASCII text as `\uXXXX` escapes" → a pre-commit check that greps for them)
-3. **verification** — Does it take a run to know, but can a machine still judge the result? (e.g. "after moving files, check none ended up empty" → a script that lists zero-byte files)
-4. If none apply, the rule needs **judgment** and belongs in prose. But if only human review is catching it today, lift it into prose at least.
+1. **codebase** — Can the wrong state be made impossible to write? Give each piece of state one owner and each task one supported way; hide internals so the wrong import fails; replace hand-synced lists with one source of truth; delete old ways an agent would copy; confine an API that needs nuance to the one module allowed to use it; name directories so the location carries the context, with lint as the backstop. (e.g. "always call B after A" → one function that does A and B)
+2. **static analysis** — Can a machine judge a violation from the input alone? Yes if types, a regex, an AST check, a schema, or a test can express it. (e.g. "never write non-ASCII text as `\uXXXX` escapes" → a pre-commit check that greps for them)
+3. **verification** — Does it take a run to know, but can a machine still judge the result? (e.g. "after moving files, check none ended up empty" → a script that lists zero-byte files) Includes artifacts that show the agent understood the intent: screenshots, recordings, state traces.
+4. **prose** — Only for what no machine can judge: a judgment call, a constraint imposed from outside that the code cannot reshape (vendor, platform, protocol), or a public API contract. Make the rule prominent and add an example of the failure. If only human review catches it today, lift it into prose at least.
+5. **human review** — What is left: confirming the change matches the intent, from verification artifacts. A reviewer who catches the same class twice is the signal this skill exists for.
+
+Record **why each higher layer does not work** for the class. "Harder to write" is not a reason (see payback below).
+
+### What counts as a device
+
+A proposal is complete only when the device meets the bar for its layer:
+
+- **Lint and CI checks** — the error names the file, type, or function to use instead, so the agent fixes the cause rather than patching around it. The same command runs locally and in CI. If the pattern is already common, start with a ratchet that fails only when a change adds more, then clean up the existing occurrences — they are what the next agent copies.
+- **Tests** — the test fails when the behavior breaks, and still passes when only the internals change.
+- **Guards** — a guard is a device only when the state it handles is legitimate. A guard that hides a symptom is not.
+- **LLM judges** — rank below every deterministic option and propose one only when none exists. The judge is never the agent that wrote the change, uses a different model (another vendor where possible), and judges against a written rubric; when it disagrees with you, suspect the rubric.
+- **Exceptions** — go on the offending line with a reason, an expiry date, and a human's approval.
+- **Proof** — the device fails on a **real past mistake** from the evidence, not an invented one. A device that cannot be shown failing on one is not a proposal yet.
+
+If a structural fix exists, the prose rule it replaces is deleted, not kept alongside.
 
 ### Where the device runs
 
@@ -55,20 +80,25 @@ Also look for:
 - **Duplication** — when a higher-layer device already exists and prose repeats it, shrink the prose to a one-line pointer to the device, or delete it.
 - **Half moves** — when the device exists but is run by hand ("after moving, run the script"), the move is done only once a hook or CI runs it automatically.
 
-## 3. Rank by running cost saved
+## 3. Rank and grade
 
-Sort roughly by `frequency × layer gap`: how often the rule is paid for today, times how many layers it moves up.
+Sort roughly by `frequency × layer gap`: how often the class is paid for today, times how many layers it moves up. An unenforced prose rule that was violated again goes to the top.
 
-- Frequency: how many times it came up in review, how often the rule is invoked, whether there is an incident record (a rule that carries dates or counts is a rule that already failed).
+- Frequency: occurrences of the class in review, commits, memory, and incident records (a rule that carries dates or counts is a rule that already failed).
 - Layer gap: moving from human review to static analysis saves more per occurrence than moving from prose to verification.
-- Attach the definition cost as a payback note — small (one regex or hook) / medium (custom lint rule, test) / large (API redesign, migration) — and how many occurrences it takes to pay back. Don't let it sink a frequent rule; drafting the device is exactly the work an agent makes cheap.
-- Propose an LLM-judged device only when no deterministic alternative exists. An LLM judge sits closer to prose than to verification.
+- Attach the definition cost as a payback note — small (one regex or hook) / medium (custom lint rule, test) / large (API redesign, ratchet and cleanup, migration) — and how many occurrences it takes to pay back. Don't let it sink a frequent class; drafting the device is exactly the work an agent makes cheap.
+
+Grade each candidate:
+
+- **Strong** — two or more occurrences (or an unenforced prose rule violated again), a real past mistake to prove the device on, and a deterministic device.
+- **Worth exploring** — evidenced and repeated, but the device needs an API redesign or a ratchet-and-cleanup before it holds, or only an LLM judge fits.
+- **Speculative** — one occurrence, or no real past mistake found to prove the device on.
 
 ## 4. Report
 
 Top 5–10 candidates only, as a self-contained HTML file — never in the target project. Resolve the temp dir from `$TMPDIR`, falling back to `/tmp` (`%TEMP%` on Windows), write `<tmpdir>/cheaper-trust-<timestamp>.html`, and open it (`open` on macOS, `xdg-open` on Linux, `start` on Windows). If the user's instructions name a way to share such reports, follow it.
 
-Each candidate is a card with a before/after cross-section of the pyramid showing where the rule is held now and where it would be held, plus strength, the move, where the device runs, evidence, a device, a violating example it catches, payback, and what prose remains. After the cards: the rules that need judgment and stay in prose (deciding not to move something is a result too), then a top recommendation. See [REPORT.md](REPORT.md) for the scaffold, card fields, and style.
+Each candidate is a card with a before/after cross-section of the pyramid showing where the rule is held now and where it would be held, plus strength, the move, where the device runs, evidence, why a higher layer does not work, a device, the real past mistake it fails on, payback, and what prose remains. After the cards: the rules that need judgment and stay in prose (deciding not to move something is a result too), then a top recommendation. See [REPORT.md](REPORT.md) for the scaffold, card fields, and style.
 
 In the chat, give only the file's absolute path, the totals, and the top recommendation in one line. Then ask which candidates to build.
 
@@ -76,4 +106,5 @@ In the chat, give only the file's absolute path, the totals, and the top recomme
 
 - Propose only. Build devices or delete prose only for the items the user picks, after approval.
 - No candidate without evidence. If you can't cite the source, drop it.
-- Include in each proposal a way to check the device really holds the rule: one violating example that the device catches.
+- Every proposal proves its device on a real past mistake from the evidence. Without one, it is `Speculative`.
+- Never propose a move that cuts cost by dropping trust.

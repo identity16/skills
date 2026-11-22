@@ -54,14 +54,15 @@ Each candidate is one `<article id="c-N">`. The diagram carries the weight; pros
 
 - **Title** — the rule, in one line.
 - **Badge row**
-  - Strength: `Strong` (emerald), `Worth exploring` (amber), `Speculative` (slate). Strong means frequent, evidenced, and a deterministic device exists.
+  - Strength: `Strong` (emerald), `Worth exploring` (amber), `Speculative` (slate), as graded in SKILL.md step 3. Unenforced prose rules that were violated again also get an `unenforced` badge.
   - Move: `prose → static analysis`, colored from the source layer to the target layer.
   - Where it runs: `agent-agnostic` or `hooks: both agents`.
 - **Before / After cross-section** — the centerpiece. Two columns, each the five layers as stacked bands (`h-9 border-l-4`, layer color at low opacity). A marker with the rule's short name sits in the layer that holds it: before, in the source layer; after, in the target layer, with the source band showing a faded remnant labeled with what prose remains (`deleted`, `one-line pointer`, `judgment only`).
 - **Evidence** — monospaced list (`font-mono text-sm`) of `file:line`, PR links, incident records. Every candidate has at least one.
-- **Cost now** — one sentence: how often it is paid today and by whom (e.g. "Flagged in 4 of the last 30 merged PRs").
+- **Cost now** — one sentence: how often the mistake class is paid for today and by whom (e.g. "Flagged in 4 of the last 30 merged PRs").
+- **Why not higher** — one line per layer above the target: why it cannot hold this class.
 - **Device** — one sentence: what to build and where it runs. For agent hooks, show both registrations (Claude Code and Codex) in a small two-column code block; a Mermaid graph fits when the wiring is the point.
-- **Proof** — one violating example the device catches, in a code block.
+- **Proof** — the real past mistake the device fails on: its source link and the offending snippet in a code block. A `Speculative` card says so instead.
 - **Payback** — definition cost (`small` / `medium` / `large`) and roughly how many occurrences until it pays back.
 - **Wins** — bullets of six words or fewer, in the pyramid's terms: "Review stops catching this", "Holds under both agents", "Prose shrinks to a pointer". Not "cleaner" or "easier to maintain".
 
