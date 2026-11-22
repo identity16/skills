@@ -2,7 +2,7 @@
 
 A **personal** agent skill pack, organized into bucket folders under `skills/`. Each bucket serves one premise; a skill belongs in a bucket only if it serves that bucket's premise.
 
-The whole pack must demand no study: the user is here for their own work, not to learn this pack. Every skill must respond to plain language, explain itself in the moment, and never assume the user knows its rules, state layout, or name — an entrypoint dispatches the rest. SKILL.md guides instruct the *agent*, never the user; a skill that only pays off for users who read its guide is broken.
+The whole pack must demand no study: the user is here for their own work, not to learn this pack. Every skill must respond to plain language, explain itself in the moment, and never assume the user knows its rules, state layout, or name — plain language alone must be enough to reach it. SKILL.md guides instruct the *agent*, never the user; a skill that only pays off for users who read its guide is broken.
 
 ## Buckets
 
@@ -32,7 +32,7 @@ The premise: "it works" is a claim until a run backs it, and a run is only worth
 - Each bucket has a `README.md` listing its skills, one line each, linked to their `SKILL.md`.
 - All skills and docs in this repo are written in English. Exception: `README.ko.md` is the Korean translation of the README — keep the two in sync when the README changes.
 - Skills that must only be invoked explicitly by the user get `disable-model-invocation: true`.
-- Personal-state contracts are duplicated because installed skills cannot reliably reference each other's files — when changing one, update every copy: `projects/` (state root, repo-id scheme, file layout) in `lets-work` and `checkpoint`; `loops/` (file layout and schemas) in `make-loop` and `maintain-loop`.
+- Personal-state contracts are duplicated because installed skills cannot reliably reference each other's files — when changing one, update every copy: `loops/` (file layout and schemas) in `make-loop` and `maintain-loop`.
 
 ## Verify
 

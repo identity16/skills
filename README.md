@@ -17,7 +17,7 @@ The AI era makes projects cheap to start and independent contexts easy to switch
 The best codebase needs no external context: intuitive code and structure — or, where the code must stay complex, a concise comment that explains it well. Second best is context that is easy to find: well-organized PRs, docs, and commit logs. A personal store outside the repo is the last resort, for context that fits neither. So when these skills capture understanding, they push it *up* this ladder whenever possible — promote a hard-won lesson into a code comment, a decision into a PR description — and keep privately only what has no home in the repo. A personal store that shrinks over time means the codebase is getting better.
 
 **No manual required.**
-These skills are not something to study — the understanding they exist to build is of your *projects*, never of the pack itself. One entrypoint is all there is to remember: `/lets-work` briefs you, frames the session, and brings in the other skills at their moments. Beyond that, every skill answers to plain language ("why is this like this?", "walk me through this change"), explains what it's doing as it goes, and never assumes you know its rules, its state files, or even its name. If a skill only pays off after you've read its guide, the skill is broken.
+These skills are not something to study — the understanding they exist to build is of your *projects*, never of the pack itself. There is nothing to remember: every skill answers to plain language ("why is this like this?", "walk me through this change"), explains what it's doing as it goes, and never assumes you know its rules, its state files, or even its name. If a skill only pays off after you've read its guide, the skill is broken.
 
 **Zero traces in target projects.**
 Everything these skills know lives in a private directory you own — never in the projects you contribute to. No config files, no `.gitignore` entries, no commits, nothing. Your setup travels with *you*, not with the repo.
@@ -28,20 +28,7 @@ This is respect as much as hygiene. Everyone works differently, and even these s
 
 ### `understanding/` — keep your grip on every project
 
-Skills that raise your understanding of the project at hand. See [`skills/understanding/`](./skills/understanding/README.md).
-
-#### Routines
-
-The habits that bookend every session: `/lets-work` on the way in, `/checkpoint` on the way out. All state lives under `${XDG_DATA_HOME:-$HOME/.local/share}/identity16-skills/`, never in the target project.
-
-| Skill | What it does |
-|---|---|
-| `lets-work` | Session entrypoint. Briefs you on how the project drifted relative to *your* recorded mental model since your last visit (or orients a first visit), then sets the session's working frame: surface decisions before they land, put understanding where it lives longest, reach for the pack's tools at their moments, propose `/checkpoint` on the way out. |
-| `checkpoint` | Exit ritual. Routes what the session taught you to its proper home — code comment, PR/commit message, or your personal journal — and records the visit marker the next `lets-work` briefs from. |
-
-#### Tools
-
-Reached for when the task calls for them. Each one makes the project's own record — commits, PRs, tickets, docs — carry more of the context, so less ends up needing a personal store at all.
+Skills that raise your understanding of the project at hand, reached for when the task calls for them. Each one makes the project's own record — commits, PRs, tickets, docs — carry more of the context, so less ends up needing a personal store at all. See [`skills/understanding/`](./skills/understanding/README.md).
 
 | Skill | What it does |
 |---|---|

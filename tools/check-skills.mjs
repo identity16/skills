@@ -42,21 +42,19 @@ for (const bucket of dirs("skills")) {
 }
 
 // Installed skills cannot read each other's files, so each pair carries its own copy of the contract.
-// The loops pair repeats its contract verbatim; checkpoint abbreviates lets-work, so only the root must match.
+// The loops pair repeats its contract verbatim.
 const contract = (text) =>
   text
     .match(/^## Personal state[^\n]*\n([\s\S]*?)^\s*- `status`[^\n]*$/m)?.[0]
     .split("\n")
     .filter((line) => !line.startsWith("Same contract as"))
     .join("\n");
-const root = (text) => text.match(/^- Root: .*$/m)?.[0];
 
 const compare = (a, b, extract, what) => {
   const [left, right] = [skills.get(a), skills.get(b)].map((text) => text && extract(text));
   if (!left || left !== right) failures.push(`${a} and ${b} disagree on ${what}`);
 };
 compare("make-loop", "maintain-loop", contract, "the state contract");
-compare("lets-work", "checkpoint", root, "the state root");
 
 if (failures.length > 0) {
   console.error(failures.map((failure) => `- ${failure}`).join("\n"));
