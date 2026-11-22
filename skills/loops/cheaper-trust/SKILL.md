@@ -21,27 +21,37 @@ The goal is to keep trust while cutting running cost. The lower a rule lives, th
 
 ## Scope
 
-Takes a target as an argument (a repo path, a file, a PR range). Without one, scan the current working directory plus the user-level prose: the global instruction files (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, and files they include), installed skills, and the current project's agent memory.
+Takes a target as an argument (a repo path, a file, a PR range). Without one, scan the current working directory plus the user-level setup of **both Claude Code and Codex**: the global instruction files (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, and files they include), installed skills, each agent's hook config, and each agent's memory for the current project. The user may switch agents at any time, so every proposal must hold under both.
 
 ## 1. Collect the rules held by lower layers
 
 Start from the most expensive layer. Record each rule with its source (`file:line` or a PR link).
 
 - **human review** — review comments on recently merged PRs (`gh pr list --state merged -L 30`, `gh api repos/{o}/{r}/pulls/{n}/comments`). A comment made twice or more is a candidate. Feedback entries in agent memory and correction examples in the user's preference files are also things a person caught.
-- **prose** — imperative sentences in `CLAUDE.md`, `AGENTS.md`, `.claude/rules/`, `.cursor/rules/`, and skill bodies ("never …", "always …", "after X, run Y", "check that …").
+- **prose** — imperative sentences in `CLAUDE.md`, `AGENTS.md`, `.claude/rules/`, `.cursor/rules/`, skill bodies, and either agent's memory ("never …", "always …", "after X, run Y", "check that …"). Note which agent reads each file: `AGENTS.md` reaches Codex, `CLAUDE.md` reaches Claude Code, and memory reaches only the agent that wrote it.
 - **verification** — procedures where an agent or a person "runs it and checks", runtime asserts, manual checklists.
-- **static analysis** — how often `eslint-disable`, `@ts-ignore`, `# noqa` appear; custom lint rules that block a forbidden pattern. Check whether API design could make the pattern impossible instead.
+- **static analysis** — how often `eslint-disable`, `@ts-ignore`, `# noqa` appear; custom lint rules that block a forbidden pattern. Check whether API design could make the pattern impossible instead. Include agent hooks — Claude Code's `hooks` in `.claude/settings.json` (project or user) and Codex's hook config (`hooks.json` or `[hooks]` in `config.toml`, under `.codex/` or `~/.codex/`) — and note which agent each one runs under.
 
 ## 2. Run the tests on each rule
 
 The first layer from the top that answers "yes" is the target layer.
 
 1. **codebase** — Can the wrong state be made unrepresentable through types, the API, or directory structure? (e.g. "always call B after A" → one function that does A and B)
-2. **static analysis** — Can a machine judge a violation from the input alone? Yes if a regex, AST check, schema, test, or hook can express it. (e.g. "never write non-ASCII text as `\uXXXX` escapes" → a post-write hook that greps for them)
+2. **static analysis** — Can a machine judge a violation from the input alone? Yes if a regex, AST check, schema, test, or hook can express it. (e.g. "never write non-ASCII text as `\uXXXX` escapes" → a pre-commit check that greps for them)
 3. **verification** — Does it take a run to know, but can a machine still judge the result? (e.g. "after moving files, check none ended up empty" → a script that lists zero-byte files)
 4. If none apply, the rule needs **judgment** and belongs in prose. But if only human review is catching it today, lift it into prose at least.
 
+### Where the device runs
+
+A device holds the rule only where it runs, and the user works in both Claude Code and Codex. Pick the first home that fits:
+
+1. **Agent-agnostic** — types, the API, lint, tests, git hooks (pre-commit, pre-push), CI. They hold under any agent and for a person typing by hand. Default here.
+2. **Agent hooks, registered for both** — only when the rule must be enforced inside the session, before the commit (e.g. block a tool call, check a file right after it is written). Put the check in one script in the repo (or the user's home for user-level rules) and register it in both agents' hook configs under the same event (`PreToolUse`, `PostToolUse`, `Stop` exist in both). Check each agent's current docs for the exact event name and file path before writing the registration. Never propose a hook for one agent alone.
+
+A rule that stays prose belongs where both agents read it: `AGENTS.md`, with `CLAUDE.md` importing it (`@AGENTS.md`) or symlinked to it. Rules in agent memory are read by one agent only; promote any that should hold under both.
+
 Also look for:
+- **Held by one agent only** — a rule written only in `CLAUDE.md`, only in one agent's memory, or enforced by a hook only one agent runs. Switching agents silently drops it.
 - **Duplication** — when a higher-layer device already exists and prose repeats it, shrink the prose to a one-line pointer to the device, or delete it.
 - **Half moves** — when the device exists but is run by hand ("after moving, run the script"), the move is done only once a hook or CI runs it automatically.
 
@@ -62,7 +72,7 @@ Top 5–10 only, in this shape:
 ### <the rule, in one line>
 `prose` → `static analysis`  ·  frequency: <n per period / incidents>  ·  definition cost: small, pays back after ~<n> occurrences
 - Evidence: <file:line / PR link / incident record>
-- Device: <what exactly to build, and where it runs>
+- Device: <what exactly to build, and where it runs — agent-agnostic, or the hook registration for both agents>
 - Remaining prose: <delete / one-line pointer / keep only the judgment part>
 ```
 

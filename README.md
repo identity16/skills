@@ -46,7 +46,7 @@ For judgments you make again and again by hand (sorting a ledger, reviewing PRs)
 |---|---|
 | `make-loop` | Defines a loop: what an item is, where items come from, what the agent looks up itself, what a proposal looks like, how you review, where approved outcomes go, and how to verify they landed. Rules start nearly empty and grow from your corrections. |
 | `maintain-loop` | Runs a cycle: collect → propose with cited rules and a confidence → review only what needs you → turn corrections into rules and flag repeated ones → apply and verify → report the review-needed trend. Proposes rule promotions; you approve them. |
-| `cheaper-trust` | Finds rules that a costly layer — human review or prose like AGENTS.md — keeps paying for on every change, and proposes moving them to a cheaper one: code structure, lint, types, tests, CI. Ranks by running cost saved, not by how hard the device is to write. Proposes only; you pick what gets built. |
+| `cheaper-trust` | Finds rules that a costly layer — human review or prose like AGENTS.md — keeps paying for on every change, and proposes moving them to a cheaper one: code structure, lint, types, tests, CI — placed so it holds under both Claude Code and Codex, never one alone. Ranks by running cost saved, not by how hard the device is to write. Proposes only; you pick what gets built. |
 
 ### `verification/` — back "it works" with a run anyone can repeat
 
