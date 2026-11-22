@@ -21,13 +21,20 @@ The goal is to keep trust while cutting running cost. The lower a rule lives, th
 
 ## Scope
 
-Takes a target as an argument (a repo path, a file, a PR range). Without one, scan the current working directory plus the user-level setup of **both Claude Code and Codex**: the global instruction files (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, and files they include), installed skills, each agent's hook config, and each agent's memory for the current project. The user may switch agents at any time, so every proposal must hold under both.
+Takes a target as an argument (a repo path, a file, a PR range). Without one, scan the current working directory plus the user-level setup of **both Claude Code and Codex**: the global instruction files (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, and files they include), installed skills, each agent's hook config, each agent's memory for the current project, and both agents' recent local sessions for it. The user may switch agents at any time, so every proposal must hold under both.
 
 ## 1. Collect mistake classes
 
 Assume every contributor is an agent that sees only the files it opened, copies the nearest example, and takes the shortest path that compiles. Hunt for the mistakes that assumption produces, starting from the most expensive layer. Record each occurrence with its source (`file:line`, a PR link, a commit).
 
 - **human review** — review comments on recently merged PRs (`gh pr list --state merged -L 30`, `gh api repos/{o}/{r}/pulls/{n}/comments`), reverts and fix-up commits, feedback entries in either agent's memory, and correction examples in the user's preference files.
+- **local agent sessions** — the corrections the user made out loud. Each is an occurrence a person paid for, and usually never reaches a PR. Read both agents' transcripts for this project from roughly the last two weeks (or the last 30 sessions):
+  - Claude Code: `~/.claude/projects/<slug>/*.jsonl`, where the slug is the project path with each non-alphanumeric character turned into `-` (entries also carry a `cwd` field to confirm). User turns are entries with `"type": "user"`; skip tool results and injected reminders.
+  - Codex: `~/.codex/sessions/YYYY/MM/DD/rollout-*.jsonl` and `~/.codex/archived_sessions/`. Match the project by `session_meta.payload.cwd`; user turns are `user_message` events or `response_item`s with role `user`; skip injected instruction blocks.
+  - Match by repository, not exact path: sessions in other worktrees or clones of the same repo count.
+  - Transcript formats change between versions; read a few lines to confirm the shape before parsing.
+  - Correction signals: the user says the result is wrong, undoes or redoes the agent's work, repeats an instruction already given, interrupts, or denies a tool call with a reason. A correction for a mistake a prose rule or memory entry already covers is the unenforced-rule signal below.
+  - Transcripts are private. Cite the session file and timestamp, quote at most one line, and keep quotes out of anything written to the target project.
 - **prose** — imperative sentences in `CLAUDE.md`, `AGENTS.md`, `.claude/rules/`, `.cursor/rules/`, skill bodies, either agent's memory, and comments that explain a workaround ("never …", "always …", "after X, run Y", "check that …", `IMPORTANT`, `do not remove`). Note which agent reads each file: `AGENTS.md` reaches Codex, `CLAUDE.md` reaches Claude Code, and memory reaches only the agent that wrote it.
 - **verification** — procedures where an agent or a person "runs it and checks", runtime asserts, manual checklists.
 - **static analysis** — suppressions (`eslint-disable`, `@ts-ignore`, `# noqa`) and the rule each one silences; custom lint rules that block a forbidden pattern. Include agent hooks — Claude Code's `hooks` in `.claude/settings.json` (project or user) and Codex's hook config (`hooks.json` or `[hooks]` in `config.toml`, under `.codex/` or `~/.codex/`) — and note which agent each one runs under.
@@ -84,7 +91,7 @@ Also look for:
 
 Sort roughly by `frequency × layer gap`: how often the class is paid for today, times how many layers it moves up. An unenforced prose rule that was violated again goes to the top.
 
-- Frequency: occurrences of the class in review, commits, memory, and incident records (a rule that carries dates or counts is a rule that already failed).
+- Frequency: occurrences of the class in review, commits, local sessions, memory, and incident records (a rule that carries dates or counts is a rule that already failed).
 - Layer gap: moving from human review to static analysis saves more per occurrence than moving from prose to verification.
 - Attach the definition cost as a payback note — small (one regex or hook) / medium (custom lint rule, test) / large (API redesign, ratchet and cleanup, migration) — and how many occurrences it takes to pay back. Don't let it sink a frequent class; drafting the device is exactly the work an agent makes cheap.
 
