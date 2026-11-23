@@ -84,8 +84,18 @@ A rule that stays prose belongs where both agents read it: `AGENTS.md`, with `CL
 
 Also look for:
 - **Held by one agent only** — a rule written only in `CLAUDE.md`, only in one agent's memory, or enforced by a hook only one agent runs. Switching agents silently drops it.
-- **Duplication** — when a higher-layer device already exists and prose repeats it, shrink the prose to a one-line pointer to the device, or delete it.
 - **Half moves** — when the device exists but is run by hand ("after moving, run the script"), the move is done only once a hook or CI runs it automatically.
+
+### Retire what no longer earns its cost
+
+Every device and rule costs something on each run — CI time, context tokens, false alarms. One that adds no trust is pure running cost. Look for:
+
+- **Prose that repeats a device** — a higher-layer device already holds the class and prose says it again. Shrink the prose to a one-line pointer to the device, or delete it.
+- **A device a higher device already holds** — a lint rule against a pattern that types or structure now make impossible; an agent hook and a git hook or CI job that implement the same check separately. (The *same command* run locally and in CI is not duplication — that is how the check is meant to run.)
+- **Dead devices** — a rule, lint, or hook whose mistake can no longer happen; a test that still passes when the behavior it checks breaks; a suppression on a rule that was since removed.
+- **Copied prose** — the same rule written separately into `CLAUDE.md` and `AGENTS.md`, or into memory and an instruction file. Keep one copy where both agents read it.
+
+Propose retiring something only when trust survives without it: take the class's real past mistake and show that what remains still catches it. For a dead device, show the mistake can no longer be written. Without that proof, keep it.
 
 ## 3. Rank and grade
 
@@ -101,17 +111,19 @@ Grade each candidate:
 - **Worth exploring** — evidenced and repeated, but the device needs an API redesign or a ratchet-and-cleanup before it holds, or only an LLM judge fits.
 - **Speculative** — one occurrence, or no real past mistake found to prove the device on.
 
+Rank retirements separately, by running cost removed: how often the redundant device or rule runs or is read, and how much noise it makes (CI minutes, context lines, false alarms, suppressions it forces).
+
 ## 4. Report
 
 Top 5–10 candidates only, as a self-contained HTML file — never in the target project. Resolve the temp dir from `$TMPDIR`, falling back to `/tmp` (`%TEMP%` on Windows), write `<tmpdir>/cheaper-trust-<timestamp>.html`, and open it (`open` on macOS, `xdg-open` on Linux, `start` on Windows). If the user's instructions name a way to share such reports, follow it.
 
-Each candidate is a card with a before/after cross-section of the pyramid showing where the rule is held now and where it would be held, plus strength, the move, where the device runs, evidence, why a higher layer does not work, a device, the real past mistake it fails on, payback, and what prose remains. After the cards: the rules that need judgment and stay in prose (deciding not to move something is a result too), then a top recommendation. See [REPORT.md](REPORT.md) for the scaffold, card fields, and style.
+Each candidate is a card with a before/after cross-section of the pyramid showing where the rule is held now and where it would be held, plus strength, the move, where the device runs, evidence, why a higher layer does not work, a device, the real past mistake it fails on, payback, and what prose remains. After the cards: the retirements, each with what remains to hold its class and the proof; the rules that need judgment and stay in prose (deciding not to move something is a result too); then a top recommendation. See [REPORT.md](REPORT.md) for the scaffold, card fields, and style.
 
 In the chat, give only the file's absolute path, the totals, and the top recommendation in one line. Then ask which candidates to build.
 
 ## Rules
 
-- Propose only. Build devices or delete prose only for the items the user picks, after approval.
+- Propose only. Build, retire, or delete only the items the user picks, after approval.
 - No candidate without evidence. If you can't cite the source, drop it.
 - Every proposal proves its device on a real past mistake from the evidence. Without one, it is `Speculative`.
 - Never propose a move that cuts cost by dropping trust.

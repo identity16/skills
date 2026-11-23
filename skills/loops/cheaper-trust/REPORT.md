@@ -25,6 +25,7 @@ The report is one self-contained HTML file in the OS temp directory. Tailwind an
     <main class="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-12">
       <header>...</header>
       <section id="candidates" class="space-y-10">...</section>
+      <section id="retire">...</section>
       <section id="stays-prose">...</section>
       <section id="top-recommendation">...</section>
     </main>
@@ -36,7 +37,7 @@ The user may read it on a phone. At narrow widths, every two-column block stacks
 
 ## Header
 
-Target (repo, path, or PR range), date, and a legend: the five layers with their colors, cheapest on top. Then one line of totals — candidates found, how many are `Strong`. No introduction paragraph.
+Target (repo, path, or PR range), date, and a legend: the five layers with their colors, cheapest on top. Then one line of totals — candidates found, how many are `Strong`, and how many retirements. No introduction paragraph.
 
 Layer colors, used everywhere a layer appears:
 
@@ -67,6 +68,16 @@ Each candidate is one `<article id="c-N">`. The diagram carries the weight; pros
 - **Wins** — bullets of six words or fewer, in the pyramid's terms: "Review stops catching this", "Holds under both agents", "Prose shrinks to a pointer". Not "cleaner" or "easier to maintain".
 
 No paragraphs. If a card needs a paragraph to be understood, the cross-section is drawn wrong.
+
+## Retire
+
+Compact cards, one per retirement, no cross-section. Each has:
+
+- **What to remove** — the device or prose, with its location (`file:line`, CI job, hook registration).
+- **Kind** — badge: `prose repeats device`, `covered by higher device`, `dead`, or `copied prose`.
+- **What holds the class instead** — the remaining device, or "the mistake can no longer be written" and why.
+- **Proof** — the real past mistake the remaining device still catches, with its source.
+- **Saves** — the running cost removed, in one line (e.g. "40 s per CI run", "12 lines of context every session").
 
 ## Stays in prose
 
