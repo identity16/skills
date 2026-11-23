@@ -23,9 +23,33 @@ The goal is to keep trust while cutting running cost. The lower a rule lives, th
 
 Takes a target as an argument (a repo path, a file, a PR range). Without one, scan the current working directory plus the user-level setup of **both Claude Code and Codex**: the global instruction files (`~/.claude/CLAUDE.md`, `~/.codex/AGENTS.md`, and files they include), installed skills, each agent's hook config, each agent's memory for the current project, and both agents' recent local sessions for it. The user may switch agents at any time, so every proposal must hold under both.
 
+## 0. Map the devices by stage
+
+Before looking for mistakes, learn what already guards the target. Read the configs, not the docs about them. A change passes five stages; list every device at each:
+
+1. **Writing** — type checker and compiler settings (strictness), linters and formatters with their configs and rule counts, editor settings committed to the repo.
+2. **Agent session** — each agent's hooks (Claude Code: `hooks` in `.claude/settings.json`; Codex: `hooks.json` or `[hooks]` in `config.toml`, project and user level). Note what each runs and on which event.
+3. **Commit** — git hooks: husky, lefthook, pre-commit, simple-git-hooks, and `.git/hooks` (local only; it does not travel with the repo, so it guards one machine).
+4. **CI** — each workflow and what it actually runs. Check which jobs are required to merge (branch protection or rulesets, e.g. `gh api repos/{o}/{r}/rulesets`, `gh api repos/{o}/{r}/branches/{b}/protection`). A job that is not required reports but does not stop anything.
+5. **Review** — CODEOWNERS, required approvals, PR template checklists (a checklist is prose, not a device).
+
+Plus **prose**, which sits beside the stages rather than in one: instruction files, rules directories, skills, and each agent's memory, with rule counts and copies.
+
+For each device, record: its stage, what it checks, whether it blocks, which agent it runs under (for hooks), and whether local and CI run the same command.
+
+The map yields findings before any mistake is collected:
+
+- **Empty stage** — nothing runs there. Show it on the map; propose filling it only when a mistake class from step 1 needs a device there.
+- **Not blocking** — a CI job that is not required, a hook that only warns.
+- **One agent only** — a session hook registered for one agent.
+- **Duplicates** — two devices checking the same thing (feeds *Retire* below).
+- **Run by hand** — a script that exists but nothing calls (a half move).
+
+Every later step reads this map: occurrences say at which stage they were caught or escaped, placement extends an existing device before adding a new one, and retirement starts from the duplicates found here.
+
 ## 1. Collect mistake classes
 
-Assume every contributor is an agent that sees only the files it opened, copies the nearest example, and takes the shortest path that compiles. Hunt for the mistakes that assumption produces, starting from the most expensive layer. Record each occurrence with its source (`file:line`, a PR link, a commit).
+Assume every contributor is an agent that sees only the files it opened, copies the nearest example, and takes the shortest path that compiles. Hunt for the mistakes that assumption produces, starting from the most expensive layer. Record each occurrence with its source (`file:line`, a PR link, a commit) and the stage where it was caught — or that it escaped.
 
 - **human review** — review comments on recently merged PRs (`gh pr list --state merged -L 30`, `gh api repos/{o}/{r}/pulls/{n}/comments`), reverts and fix-up commits, feedback entries in either agent's memory, and correction examples in the user's preference files.
 - **local agent sessions** — the corrections the user made out loud. Each is an occurrence a person paid for, and usually never reaches a PR. Read both agents' transcripts for this project from roughly the last two weeks (or the last 30 sessions):
@@ -58,6 +82,8 @@ The first layer from the top that answers "yes" is the target layer.
 4. **prose** — Only for what no machine can judge: a judgment call, a constraint imposed from outside that the code cannot reshape (vendor, platform, protocol), or a public API contract. Make the rule prominent and add an example of the failure. If only human review catches it today, lift it into prose at least.
 5. **human review** — What is left: confirming the change matches the intent, from verification artifacts. A reviewer who catches the same class twice is the signal this skill exists for.
 
+Then pick the **stage** from the map: the earliest one where the device can run, and the same command at commit and in CI. Extend a device already on the map (one more lint rule, one more test, make an existing CI job required) before adding a new one. Never propose a device that duplicates one already on the map.
+
 Record **why each higher layer does not work** for the class. "Harder to write" is not a reason (see payback below).
 
 ### What counts as a device
@@ -88,7 +114,7 @@ Also look for:
 
 ### Retire what no longer earns its cost
 
-Every device and rule costs something on each run — CI time, context tokens, false alarms. One that adds no trust is pure running cost. Look for:
+Every device and rule costs something on each run — CI time, context tokens, false alarms. One that adds no trust is pure running cost. Start from the duplicates on the map, then look for:
 
 - **Prose that repeats a device** — a higher-layer device already holds the class and prose says it again. Shrink the prose to a one-line pointer to the device, or delete it.
 - **A device a higher device already holds** — a lint rule against a pattern that types or structure now make impossible; an agent hook and a git hook or CI job that implement the same check separately. (The *same command* run locally and in CI is not duplication — that is how the check is meant to run.)
@@ -115,9 +141,9 @@ Rank retirements separately, by running cost removed: how often the redundant de
 
 ## 4. Report
 
-Top 5–10 candidates only, as a self-contained HTML file — never in the target project. Resolve the temp dir from `$TMPDIR`, falling back to `/tmp` (`%TEMP%` on Windows), write `<tmpdir>/cheaper-trust-<timestamp>.html`, and open it (`open` on macOS, `xdg-open` on Linux, `start` on Windows). If the user's instructions name a way to share such reports, follow it.
+One self-contained HTML file — never in the target project. Resolve the temp dir from `$TMPDIR`, falling back to `/tmp` (`%TEMP%` on Windows), write `<tmpdir>/cheaper-trust-<timestamp>.html`, and open it (`open` on macOS, `xdg-open` on Linux, `start` on Windows). If the user's instructions name a way to share such reports, follow it. Write it in the language the user is conversing in.
 
-Each candidate is a card with a before/after cross-section of the pyramid showing where the rule is held now and where it would be held, plus strength, the move, where the device runs, evidence, why a higher layer does not work, a device, the real past mistake it fails on, payback, and what prose remains. After the cards: the retirements, each with what remains to hold its class and the proof; the rules that need judgment and stay in prose (deciding not to move something is a result too); then a top recommendation. See [REPORT.md](REPORT.md) for the scaffold, card fields, and style.
+It answers three questions in order: what already guards the project (the device map, with its findings flagged in place); which mistake is stopped where, by what (a matrix of mistake classes × stages, showing today's devices, prose, people's catches, escapes, proposed devices, and retirements); and what to change — top 5–10 proposal cards, each pairing the real past mistake with the message its device would print, then retirements, rules that stay in prose (deciding not to move something is a result too), and a top recommendation. See [REPORT.md](REPORT.md) for the scaffold, the six chips that make up the whole visual vocabulary, and each section's fields.
 
 In the chat, give only the file's absolute path, the totals, and the top recommendation in one line. Then ask which candidates to build.
 
